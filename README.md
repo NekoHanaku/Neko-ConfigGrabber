@@ -12,7 +12,7 @@ Eat Telegram Xray Configs Like a Neko
 
 <strong>Done.</strong>
 
-Now you will get the configs in the configs.json file.
+Now you will get the configs in the configs.json file Every 3 Hours.
 
 ## TODO
 1. Add support for private channels and groups.
