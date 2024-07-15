@@ -42,7 +42,7 @@ Eat Telegram Xray Configs Like a Neko
   4. Clone your private repository to your device.
 
      ```
-     git clone https://github.com/NekoHanaku/Neko-ConfigGrabber.git
+     git clone https://github.com/YOURUSERNAME/Neko-ConfigGrabber.git
      cd Neko-ConfigGrabber
      ```
      
