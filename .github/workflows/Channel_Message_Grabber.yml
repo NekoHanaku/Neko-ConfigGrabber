@@ -1,4 +1,4 @@
-name: get Channel Configs
+name: Get Channel Configs
 
 on:
   schedule:
