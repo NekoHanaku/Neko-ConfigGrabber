@@ -1,5 +1,24 @@
 # Neko-ConfigGrabber
-Eat Telegram Xray Configs Like a Neko
+
+<p align="center">
+  <b>Eat Telegram Xray Configs Like a Neko</b>
+</p></br>
+
+<p align="center">This is a Python script that collects VPN Configs from various Channels and groups and saves them to a Json file for other scripts.</p>
+
+<p align="center"><strong>🔴 <em>We recommend using a secondary account or an account that you don't frequently use.</em> 🔴</strong></p></br>
+
+# امکانات
+
+   • ✅ سرعت بسیار بالا در جمع آوری کانفیگ ها 
+
+   • ✅ قابلیت جمع کردن کانفیگ ها از Code Block های پست های تلگرام
+
+   • ✅ دریافت انواع کانفیگ های xray از کانال ها و گروه ها
+
+   • ✅ پشتیبانی از کانال ها و گروه های شخصی
+
+   • ✅ خروجی به صورت json و Machine-readable
 
 ## How to use
 1. Fork this repository and make sure the repository is **private**.
@@ -47,7 +66,7 @@ Eat Telegram Xray Configs Like a Neko
      ```
      
   5. Edit lines 10-11 of `Grabber.py` with your Telegram API ID and hash.
-  6. Edit line 12 of `Grabber.py` with your config file URL (you can see `source.conf.example` for the config file structure).
+  6. Edit line 12 of `Grabber.py` with your config file URL (you can see `source.conf.example` for the config file structure). **(Optional)**
   7. Run `Grabber.py` on your PC and complete the initial setup (enter your mobile number and OTP code).
 
      ```
@@ -68,9 +87,29 @@ Eat Telegram Xray Configs Like a Neko
 
 Now you will get the configs in the configs.json file Every 3 Hours.
 
-## TODO
-1. Add support for private channels and groups.
-2. Add JSON configs support.
+## Config File structure
+
+   The configuration file should follow the structure below:
+
+   ```
+   channel_username1,channel_username2,channel_username3,private_channel_Name1,private_channel_Name2,private_group_Name1,private_group_Name2
+   ```
+
+   1. **No Spaces in Usernames**
+
+      Usernames should not contain any spaces. Ensure there are no spaces before, after, or within the usernames.
+
+   2. **Manual Joining For Private Chats**
+
+      You must manually join the private channels and groups before including their names in the configuration file.
+
+   3. **Exact Names for Private Channels and Groups**
+
+      Use the exact names of private channels or groups as they appear in your Telegram. Ensure the names are case-sensitive and accurately match the intended channels or groups.
+
+## TODO 🔧
+1. Add JSON configs support.
+2. Normal Subscription Output
 
 ## Disclaimer
 

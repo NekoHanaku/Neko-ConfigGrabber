@@ -17,22 +17,22 @@ async def get_dialogs():
 
     dialogs = await client.get_dialogs()
 
-    return list(
-        map(lambda x: x.lower(), [d.entity.username for d in dialogs if d.is_channel])
-    )
+    return [
+        (d.entity.username.lower() if hasattr(d.entity, 'username') and d.entity.username else d.name)
+        for d in dialogs if d.is_channel or d.is_group
+    ]
 
+async def join_chat(config_list, dialogs):
 
-async def join_channels(channel_list, dialogs):
-
-    for channel in channel_list:
-        if channel not in dialogs:
+    for chat in config_list:
+        if chat not in dialogs:
             while True:
                 try:
-                    await client(JoinChannelRequest(channel))
-                    print(f"Joined channel: {channel}")
+                    await client(JoinChannelRequest(chat))
+                    print(f"Joined chat: {chat}")
                     break
                 except UserAlreadyParticipantError:
-                    print(f"Already a member of channel: {channel}")
+                    print(f"Already a member of chat: {chat}")
                     break
                 except FloodWaitError as e:
                     print(
@@ -40,17 +40,17 @@ async def join_channels(channel_list, dialogs):
                     )
                     await asyncio.sleep(e.seconds)
                 except Exception as e:
-                    print(f"Failed to join channel {channel}: {e}")
+                    print(f"Failed to join chat {chat}: {e}")
                     break
 
 
-async def get_channel_messages(channel, dialogs):
-    if channel in dialogs:
-        channel_entity = await client.get_entity(channel)
+async def get_channel_messages(input, dialogs):
+    if input in dialogs:
+        entity = await client.get_entity(input)
 
-        messages = []
+        all_configs = []
         async for message in client.iter_messages(
-            channel_entity,
+            entity,
             offset_date=datetime.now(tz=timezone.utc) - timedelta(hours=72),
             reverse=True,
         ):
@@ -60,31 +60,33 @@ async def get_channel_messages(channel, dialogs):
                 pattern = r"(?<![a-zA-Z])(?:(?!https?)[a-zA-Z0-9]+):\/\/\S+"
                 configs = re.findall(pattern, message.message, re.IGNORECASE)
                 if configs != []:
-                    messages += configs
-        return messages
+                    all_configs += configs
+        return all_configs
     else:
         return []
 
 
 async def main():
-    config_response = requests.get(conf_url)
 
-    print(config_response.text)
+    config_response = requests.get(conf_url)
 
     dialogs = await get_dialogs()
 
     if config_response.status_code == 200:
         status = "OK"
 
-        channels = config_response.text.strip().lower().split(",")
-        await join_channels(channels, dialogs)
+        config_list = config_response.text.strip().lower().split(",")
+        
+        print(config_list)
+        
+        await join_chat(config_list, dialogs)
     else:
         status = "LOCAL"
-        channels = dialogs
+        config_list = dialogs
 
     all_channels_messages = {"status": status}
 
-    for channel in channels:
+    for channel in config_list:
         all_channels_messages[channel] = await get_channel_messages(channel, dialogs)
 
     with open("configs.json", "w", encoding="utf-8") as f:
