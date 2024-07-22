@@ -65,7 +65,7 @@ async def get_channel_messages(input, dialogs):
                 if configs != []:
                     all_configs += configs
         print(f"successfully grabbed {len(all_configs)} configs from {input}")
-        return all_configs
+        return all_configs[::-1]
     else:
         return []
 
