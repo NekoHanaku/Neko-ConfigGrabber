@@ -26,6 +26,7 @@ async def join_chat(config_list, dialogs):
 
     for chat in config_list:
         if chat not in dialogs:
+            print(f"trying to join : {chat}")
             while True:
                 try:
                     await client(JoinChannelRequest(chat))
@@ -46,13 +47,15 @@ async def join_chat(config_list, dialogs):
 
 async def get_channel_messages(input, dialogs):
     if input in dialogs:
+        print(f"get messages from : {input}")
         entity = await client.get_entity(input)
 
         all_configs = []
+
         async for message in client.iter_messages(
             entity,
             offset_date=datetime.now(tz=timezone.utc) - timedelta(hours=72),
-            reverse=True,
+            reverse=True
         ):
 
             if (message.message != None) and (len(message.message) != 0):
@@ -61,6 +64,7 @@ async def get_channel_messages(input, dialogs):
                 configs = re.findall(pattern, message.message, re.IGNORECASE)
                 if configs != []:
                     all_configs += configs
+        print(f"successfully grabbed {len(all_configs)} configs from {input}")
         return all_configs
     else:
         return []
@@ -71,6 +75,8 @@ async def main():
     config_response = requests.get(conf_url)
 
     dialogs = await get_dialogs()
+    
+    print(dialogs)
 
     if config_response.status_code == 200:
         status = "OK"
@@ -87,6 +93,7 @@ async def main():
     all_channels_messages = {"status": status}
 
     for channel in config_list:
+        print("==================================================")
         all_channels_messages[channel] = await get_channel_messages(channel, dialogs)
 
     with open("configs.json", "w", encoding="utf-8") as f:
