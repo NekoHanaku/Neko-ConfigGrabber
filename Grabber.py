@@ -18,10 +18,15 @@ async def get_dialogs():
     dialogs = await client.get_dialogs()
 
     return [
-        (d.entity.username.lower() if hasattr(d.entity, 'username') and d.entity.username else d.name)
+        (d.entity.username.lower() if hasattr(d.entity, 'username') and d.entity.username else d.id)
         for d in dialogs if d.is_channel or d.is_group
     ]
 
+async def get_Name(input):
+    if isinstance(input, int):
+        return (await client.get_entity(input)).title.replace(' ', '_')
+    return input
+    
 async def join_chat(config_list, dialogs):
 
     for chat in config_list:
@@ -47,8 +52,9 @@ async def join_chat(config_list, dialogs):
 
 async def get_channel_messages(input, dialogs):
     if input in dialogs:
-        print(f"get messages from : {input}")
-        entity = await client.get_entity(input)
+        Chat_Name = await get_Name(input)
+        print(f"get messages from : {Chat_Name}")
+        entity = await client.get_input_entity(input)
 
         all_configs = []
 
@@ -64,7 +70,7 @@ async def get_channel_messages(input, dialogs):
                 configs = re.findall(pattern, message.message, re.IGNORECASE)
                 if configs != []:
                     all_configs += configs
-        print(f"successfully grabbed {len(all_configs)} configs from {input}")
+        print(f"successfully grabbed {len(all_configs)} configs from {Chat_Name}")
         return all_configs[::-1]
     else:
         return []
@@ -77,13 +83,15 @@ async def main():
     dialogs = await get_dialogs()
     
     print(dialogs)
+    print(f"\n\nyou have {len(dialogs)} chats\n\n")
 
     if config_response.status_code == 200:
         status = "OK"
 
-        config_list = config_response.text.strip().lower().split(",")
+        config_list = [int(x) if x.startswith("-100") else x for x in config_response.text.strip().lower().split(",")]
         
         print(config_list)
+        print(f"\n\nconfigs will be grabbed from {len(config_list)} chats\n\n")
         
         await join_chat(config_list, dialogs)
     else:
@@ -92,9 +100,12 @@ async def main():
 
     all_channels_messages = {"status": status}
 
-    for channel in config_list:
+    for Chat in config_list:
         print("==================================================")
-        all_channels_messages[channel] = await get_channel_messages(channel, dialogs)
+        
+        Chat_Name = await get_Name(Chat)
+
+        all_channels_messages[Chat_Name] = await get_channel_messages(Chat, dialogs)
 
     with open("configs.json", "w", encoding="utf-8") as f:
         json.dump(all_channels_messages, f, ensure_ascii=False, indent=4)

@@ -92,7 +92,7 @@ Now you will get the configs in the configs.json file Every 3 Hours.
    The configuration file should follow the structure below:
 
    ```
-   channel_username1,channel_username2,channel_username3,private_channel_Name1,private_channel_Name2,private_group_Name1,private_group_Name2
+   channel_username1,channel_username2,channel_username3,private_channel_id1,private_channel_id2,private_group_id1,private_group_id2
    ```
 
    1. **No Spaces in Usernames**
@@ -103,9 +103,9 @@ Now you will get the configs in the configs.json file Every 3 Hours.
 
       You must manually join the private channels and groups before including their names in the configuration file.
 
-   3. **Exact Names for Private Channels and Groups**
+   3. **Full id for Private Channels and Groups**
 
-      Use the exact names of private channels or groups as they appear in your Telegram. Ensure the names are case-sensitive and accurately match the intended channels or groups.
+      Use the full id of private channels or groups.
 
 ## TODO 🔧
 1. Add JSON configs support.
